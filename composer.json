@@ -1,0 +1,26 @@
+{
+  "name": "adrien/statistiques-messenger",
+  "description": "Get messenger statistiques",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adrien Chinour",
+      "email": "adrien@chinour.fr"
+    }
+  ],
+  "require": {
+    "symfony/console": "^5.0",
+    "twig/twig": "^3.0",
+    "php-di/php-di": "^6.0",
+    "doctrine/annotations": "^1.8",
+    "doctrine/orm": "^2.7",
+    "symfony/yaml": "^5.0",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src"
+    }
+  }
+}
