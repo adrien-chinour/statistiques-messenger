@@ -7,6 +7,10 @@ use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Entity\Person;
 
+/*
+ * TODO split this  by entity
+ */
+
 class EntityConverter
 {
 
@@ -22,22 +26,32 @@ class EntityConverter
 
     /**
      * @param string $folder
+     * @param string $name
      * @return Conversation
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function importConversation(string $folder): Conversation
+    public function importConversation(string $folder, string $name): Conversation
     {
         $conversation = new Conversation();
-        $conversation->setUuid(md5(uniqid()));
-        $conversation->setFolder($folder);
+        $conversation
+            ->setName($name)
+            ->setUuid(md5(uniqid()))
+            ->setFolder($folder);
         $this->manager->persist($conversation);
         $this->manager->flush();
 
         return $conversation;
     }
 
-    public function importPersons(Conversation $conversation, array $persons)
+    /**
+     * @param Conversation $conversation
+     * @param array $persons
+     * @return \Generator
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function importPersons(Conversation $conversation, array $persons): \Generator
     {
         foreach ($persons as $person) {
             $name = $person["name"];
@@ -53,10 +67,21 @@ class EntityConverter
                 $this->manager->persist($entity);
                 $this->manager->flush();
             }
+
+            yield;
         }
     }
 
-    public function importMessages(Conversation $conversation, array $persons, array &$messages)
+    /**
+     * @param Conversation $conversation
+     * @param array $persons
+     * @param array $messages
+     * @return \Generator
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function importMessages(Conversation $conversation, array $persons, array $messages): \Generator
     {
         $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
 
@@ -106,11 +131,4 @@ class EntityConverter
 
         return null;
     }
-
-    function convert($size)
-    {
-        $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
-        return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
-    }
-
 }

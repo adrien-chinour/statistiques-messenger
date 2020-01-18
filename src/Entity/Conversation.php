@@ -38,10 +38,21 @@ class Conversation
     private $messages;
 
     /**
+     * @ORM\Column(type="string")
+     * @var string
+     */
+    private $name;
+
+    /**
      * @ORM\Column(type="string", nullable=true)
      * @var string
      */
     private $folder;
+
+    public function __toString()
+    {
+        return $this->getUuid();
+    }
 
     /**
      * @return int
@@ -120,6 +131,24 @@ class Conversation
     public function setFolder(string $folder): Conversation
     {
         $this->folder = $folder;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return Conversation
+     */
+    public function setName(string $name): Conversation
+    {
+        $this->name = $name;
         return $this;
     }
 

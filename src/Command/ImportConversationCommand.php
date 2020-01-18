@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\Conversation;
 use App\Entity\Person;
 use App\Service\DataFolderReader;
 use App\Service\EntityConverter;
@@ -14,6 +15,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ImportConversationCommand extends Command
 {
+    private const PROGRESS_BAR_FORMAT = '%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%';
+
     private static $name = 'app:import:conversation';
 
     /**
@@ -28,6 +31,11 @@ class ImportConversationCommand extends Command
      * @var EntityManager
      */
     private $manager;
+
+    /**
+     * @var SymfonyStyle
+     */
+    private $io;
 
     public function __construct(DataFolderReader $folderReader, EntityConverter $converter, EntityManager $manager, $name = null)
     {
@@ -44,56 +52,118 @@ class ImportConversationCommand extends Command
             ->setAliases(['a:i:c']);
     }
 
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->io = new SymfonyStyle($input, $output);
+    }
+
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
+        $this->io->title("Import data from conversation");
 
-        $question = new Question('Conversation to load', null);
-        $question->setAutocompleterValues($this->folderReader->getMessageFolders());
-        $conversationFolder = $io->askQuestion($question);
-        if ($conversationFolder === null) {
-            return 1;
-        }
+        $this->io->section("Settings");
+        $conversationFolder = $this->getConversationFolder();
+        $conversationName = $this->getConversationName();
 
-        $io->title("Start importing data form $conversationFolder");
-        $absoluteFolder = $this->folderReader->getInboxFolder() . "/$conversationFolder";
-        $files = array_diff(scandir($absoluteFolder), ['.', '..']);
-        $conversation = $this->converter->importConversation($absoluteFolder);
+        $this->io->section("Importing data (this may be long)");
+        $conversation = $this->importConversation($conversationFolder, $conversationName);
 
         $messages = [];
-        foreach ($files as $file) {
-            $json = json_decode(file_get_contents("$absoluteFolder/$file"), true);
-            $this->converter->importPersons($conversation, $json["participants"]);
+        $persons = [];
+        foreach ($this->folderReader->getConversationFiles($conversationFolder) as $file) {
+            $json = json_decode(file_get_contents("$conversationFolder/$file"), true);
             $messages[] = $json["messages"];
+            $persons[] = $json["participants"];
         }
 
-        $persons = $this->manager->getRepository(Person::class)->findBy(['conversation' => $conversation]);
+        $this->importPersons($conversation, $persons);
+        $this->importMessages($conversation, $messages);
 
-        $size = array_reduce($messages, function ($size, $chunk) {
-            $size += count($chunk);
-            return $size;
-        });
+        $this->io->success("Conversation correctly imported.");
+        return 0;
+    }
 
-        $pb = $io->createProgressBar($size);
-        $pb->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%%');
+    private function getConversationFolder(): string
+    {
+        $question = new Question('Conversation to load', null);
+        $question->setAutocompleterValues($this->folderReader->getMessageFolders());
+        $conversationFolder = $this->io->askQuestion($question);
+        return $this->folderReader->getConversationFolder($conversationFolder);
+    }
+
+    private function getConversationName(): string
+    {
+        return $this->io->ask("Name this conversation import");
+    }
+
+    /**
+     * @param string $folder
+     * @param string $name
+     * @return Conversation
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function importConversation(string $folder, string $name): Conversation
+    {
+        return $this->converter->importConversation($folder, $name);
+    }
+
+    /**
+     * @param Conversation $conversation
+     * @param array $persons
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function importPersons(Conversation $conversation, array $persons): void
+    {
+        $pb = $this->io->createProgressBar($this->getChunkSize($persons));
+        $pb->setFormat(self::PROGRESS_BAR_FORMAT);
+
         $pb->start();
-        foreach ($messages as $chunk) {
-            $data = $chunk;
-            foreach ($this->converter->importMessages($conversation, $persons, $data) as $line) {
+        foreach ($persons as $chunk) {
+            foreach ($this->converter->importPersons($conversation, $chunk) as $line) {
                 $pb->advance();
             }
         }
         $pb->finish();
-        $io->success("Conversation correctly imported.");
-        return 0;
     }
 
+    /**
+     * @param Conversation $conversation
+     * @param array $messages
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function importMessages(Conversation $conversation, array $messages): void
+    {
+        $persons = $this->manager->getRepository(Person::class)->findBy(['conversation' => $conversation]);
+
+        $pb = $this->io->createProgressBar($this->getChunkSize($messages));
+        $pb->setFormat(self::PROGRESS_BAR_FORMAT);
+
+        $pb->start();
+        foreach ($messages as $chunk) {
+            foreach ($this->converter->importMessages($conversation, $persons, $chunk) as $line) {
+                $pb->advance();
+            }
+        }
+        $pb->finish();
+    }
+
+    private function getChunkSize(array $chunks): int
+    {
+        return array_reduce($chunks, function ($size, $chunk) {
+            return $size + count($chunk);
+        });
+    }
 
 }
