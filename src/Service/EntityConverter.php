@@ -53,15 +53,18 @@ class EntityConverter
                 $this->manager->persist($entity);
                 $this->manager->flush();
             }
-
         }
     }
 
-    public function importMessages(Conversation $conversation, array $messages)
+    public function importMessages(Conversation $conversation, array $persons, array &$messages)
     {
+        $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
+
+        $chunk = 0;
         foreach ($messages as $message) {
+            $chunk += 1;
             $name = $message["sender_name"];
-            $person = $this->manager->getRepository(Person::class)->findOneBy(['conversation' => $conversation, 'name' => $name]);
+            $person = $this->getAuthor($persons, $name);
 
             if ($person === null) {
                 $person = new Person();
@@ -80,9 +83,34 @@ class EntityConverter
                     ->setAuthor($person)
                     ->setDatetime(new \DateTime("@{$message['timestamp_ms']}"));
                 $this->manager->persist($entity);
+            }
+
+            if ($chunk % 1000 === 0) {
                 $this->manager->flush();
+                $this->manager->clear(Message::class);
+            }
+            yield;
+        }
+
+        $this->manager->flush();
+    }
+
+    private function getAuthor(array $persons, string $name): ?Person
+    {
+        /** @var Person $person */
+        foreach ($persons as $person) {
+            if ($person->getName() === $name) {
+                return $person;
             }
         }
+
+        return null;
+    }
+
+    function convert($size)
+    {
+        $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
+        return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
     }
 
 }

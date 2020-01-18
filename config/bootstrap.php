@@ -9,15 +9,18 @@ $entitiesPath = [
     __DIR__ . '/../src/Entity'
 ];
 
-$isDevMode = true;
+$isDevMode = false;
 $proxyDir = null;
 $cache = null;
 $useSimpleAnnotationReader = false;
 
-$dbParams = [
-    'driver' => 'pdo_sqlite',
-    'path' => __DIR__ . '/../data/messages.sqlite'
-];
+$connectionParams = array(
+    'dbname' => 'postgres',
+    'user' => 'postgres',
+    'password' => 'postgres',
+    'host' => 'localhost',
+    'driver' => 'pdo_pgsql',
+);
 
 $config = Setup::createAnnotationMetadataConfiguration(
     $entitiesPath,
@@ -26,6 +29,6 @@ $config = Setup::createAnnotationMetadataConfiguration(
     $cache,
     $useSimpleAnnotationReader
 );
-$entityManager = EntityManager::create($dbParams, $config);
+$entityManager = EntityManager::create($connectionParams, $config);
 
 return $entityManager;

@@ -4,11 +4,10 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="message", indexes={@Index(name="message_index_search", columns={"id", "author_id", "conversation_id"})})
+ * @ORM\Table(name="message")
  */
 class Message
 {
@@ -34,7 +33,7 @@ class Message
     private $conversation;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      * @var string
      */
     private $content;

@@ -2,8 +2,10 @@
 
 namespace App\Command;
 
+use App\Entity\Person;
 use App\Service\DataFolderReader;
 use App\Service\EntityConverter;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,12 +24,17 @@ class ImportConversationCommand extends Command
      * @var EntityConverter
      */
     private $converter;
+    /**
+     * @var EntityManager
+     */
+    private $manager;
 
-    public function __construct(DataFolderReader $folderReader, EntityConverter $converter, $name = null)
+    public function __construct(DataFolderReader $folderReader, EntityConverter $converter, EntityManager $manager, $name = null)
     {
         parent::__construct($name);
         $this->folderReader = $folderReader;
         $this->converter = $converter;
+        $this->manager = $manager;
     }
 
     protected function configure()
@@ -60,13 +67,28 @@ class ImportConversationCommand extends Command
         $files = array_diff(scandir($absoluteFolder), ['.', '..']);
         $conversation = $this->converter->importConversation($absoluteFolder);
 
-        $pb = $io->createProgressBar(count($files));
-        $pb->start();
+        $messages = [];
         foreach ($files as $file) {
             $json = json_decode(file_get_contents("$absoluteFolder/$file"), true);
             $this->converter->importPersons($conversation, $json["participants"]);
-            $this->converter->importMessages($conversation, $json["messages"]);
-            $pb->advance();
+            $messages[] = $json["messages"];
+        }
+
+        $persons = $this->manager->getRepository(Person::class)->findBy(['conversation' => $conversation]);
+
+        $size = array_reduce($messages, function ($size, $chunk) {
+            $size += count($chunk);
+            return $size;
+        });
+
+        $pb = $io->createProgressBar($size);
+        $pb->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%%');
+        $pb->start();
+        foreach ($messages as $chunk) {
+            $data = $chunk;
+            foreach ($this->converter->importMessages($conversation, $persons, $data) as $line) {
+                $pb->advance();
+            }
         }
         $pb->finish();
         $io->success("Conversation correctly imported.");

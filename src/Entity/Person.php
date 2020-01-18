@@ -3,11 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="person", indexes={@Index(name="person_index_search", columns={"name", "conversation_id"})})
+ * @ORM\Table(name="person")
  */
 class Person
 {
