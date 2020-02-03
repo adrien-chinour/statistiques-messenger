@@ -51,7 +51,7 @@ class Conversation
 
     public function __toString()
     {
-        return $this->getUuid();
+        return $this->getName();
     }
 
     /**

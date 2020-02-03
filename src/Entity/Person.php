@@ -99,4 +99,9 @@ class Person
         return $this;
     }
 
+    public function countMessages(): int
+    {
+        return count($this->messages);
+    }
+
 }

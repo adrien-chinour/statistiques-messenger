@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Conversation {{ conversation.name }}</title>
+</head>
+<body>
+<div class="container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Classement</th>
+            <th>Nom</th>
+            <th>Nombre de messages</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set i = 1 %}
+        {% for person in persons %}
+            <tr>
+                <td>N°{{ i }}</td>
+                <td>{{ person.name }}</td>
+                <td>{{ person.nb_message }}</td>
+            </tr>
+            {% set i = i+1 %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
