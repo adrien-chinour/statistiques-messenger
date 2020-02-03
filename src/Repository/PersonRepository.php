@@ -6,7 +6,6 @@ use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Entity\Person;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 
 class PersonRepository
 {

@@ -55,7 +55,6 @@ class EntityConverter
     {
         foreach ($persons as $person) {
             $name = $person["name"];
-
             $exist = $this->manager->getRepository(Person::class)->findOneBy(['conversation' => $conversation, 'name' => $name]);
 
             if ($exist === null) {
@@ -110,7 +109,7 @@ class EntityConverter
                 $this->manager->persist($entity);
             }
 
-            if ($chunk % 1000 === 0) {
+            if ($chunk % 100 === 0) {
                 $this->manager->flush();
                 $this->manager->clear(Message::class);
             }

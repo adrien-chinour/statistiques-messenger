@@ -21,7 +21,7 @@ class Message
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="person", inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="messages")
      * @var Person
      */
     private $author;
@@ -43,6 +43,12 @@ class Message
      * @var DateTime
      */
     private $datetime;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Reaction", mappedBy="message")
+     * @var Reaction[]
+     */
+    private $reactions;
 
     /**
      * @return int
@@ -121,6 +127,24 @@ class Message
     public function setDatetime(DateTime $datetime): Message
     {
         $this->datetime = $datetime;
+        return $this;
+    }
+
+    /**
+     * @return Reaction[]
+     */
+    public function getReactions(): array
+    {
+        return $this->reactions;
+    }
+
+    /**
+     * @param Reaction[] $reactions
+     * @return Message
+     */
+    public function setReactions(array $reactions): Message
+    {
+        $this->reactions = $reactions;
         return $this;
     }
 

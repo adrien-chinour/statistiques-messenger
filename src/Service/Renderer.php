@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Twig;
+namespace App\Service;
 
 
 use Twig\Environment;

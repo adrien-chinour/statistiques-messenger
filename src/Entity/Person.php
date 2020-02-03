@@ -38,6 +38,12 @@ class Person
     private $conversation;
 
     /**
+     * @ORM\OneToMany(targetEntity="Reaction", mappedBy="author")
+     * @var Reaction[]
+     */
+    private $reactions;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -102,6 +108,24 @@ class Person
     public function countMessages(): int
     {
         return count($this->messages);
+    }
+
+    /**
+     * @return Reaction[]
+     */
+    public function getReactions(): array
+    {
+        return $this->reactions;
+    }
+
+    /**
+     * @param Reaction[] $reactions
+     * @return Person
+     */
+    public function setReactions(array $reactions): Person
+    {
+        $this->reactions = $reactions;
+        return $this;
     }
 
 }
