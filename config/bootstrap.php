@@ -1,6 +1,9 @@
 <?php
-
+use Symfony\Component\Dotenv\Dotenv;
 require_once(__DIR__ . '/../vendor/autoload.php');
+
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__.'/../.env');
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
@@ -15,10 +18,10 @@ $cache = null;
 $useSimpleAnnotationReader = false;
 
 $connectionParams = array(
-    'dbname' => 'postgres',
-    'user' => 'postgres',
-    'password' => 'postgres',
-    'host' => 'localhost',
+    'dbname' => $_ENV['DB_NAME'],
+    'user' => $_ENV['DB_USER'],
+    'password' => $_ENV['DB_PASSWORD'],
+    'host' => $_ENV['DB_HOST'],
     'driver' => 'pdo_pgsql',
 );
 
