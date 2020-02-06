@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,13 +28,13 @@ class Conversation
 
     /**
      * @ORM\OneToMany(targetEntity="Person", mappedBy="conversation")
-     * @var Person[]
+     * @var Collection
      */
     private $persons;
 
     /**
      * @ORM\OneToMany(targetEntity="Message", mappedBy="conversation")
-     * @var Message[]
+     * @var Collection
      */
     private $messages;
 
@@ -81,9 +82,9 @@ class Conversation
     }
 
     /**
-     * @return Person[]
+     * @return Collection
      */
-    public function getPersons(): array
+    public function getPersons(): Collection
     {
         return $this->persons;
     }
@@ -99,9 +100,9 @@ class Conversation
     }
 
     /**
-     * @return Message[]
+     * @return Collection
      */
-    public function getMessages(): array
+    public function getMessages(): Collection
     {
         return $this->messages;
     }

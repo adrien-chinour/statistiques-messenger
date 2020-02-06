@@ -107,12 +107,14 @@ class EntityConverter
             }
 
             if (isset($message["content"]) && $message["type"] == "Generic" && $message["content"] !== null) {
+                $timestamp = round($message['timestamp_ms'] / 1000);
+
                 $entity = new Message();
                 $entity
                     ->setConversation($conversation)
                     ->setContent($message["content"])
                     ->setAuthor($person)
-                    ->setDatetime(new DateTime("@{$message['timestamp_ms']}"));
+                    ->setDatetime(new DateTime("@$timestamp"));
                 $this->manager->persist($entity);
 
                 if (isset($message["reactions"])) {
@@ -140,8 +142,16 @@ class EntityConverter
     {
         foreach ($reactions as $reaction) {
 
+            $actor = $this->getAuthor($persons, $reaction['actor']);
+            if ($actor === null) {
+                $actor = (new Person())
+                    ->setName($reaction['actor'])
+                    ->setConversation($message->getConversation());
+                $this->manager->persist($actor);
+            }
+
             $entity = (new Reaction())
-                ->setAuthor($this->getAuthor($persons, $reaction['actor']))
+                ->setAuthor($actor)
                 ->setContent($reaction["reaction"])
                 ->setMessage($message);
             $this->manager->persist($entity);

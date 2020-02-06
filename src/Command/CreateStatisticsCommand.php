@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Conversation;
+use App\Repository\MessageRepository;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
@@ -31,13 +32,22 @@ class CreateStatisticsCommand extends Command
      * @var PersonRepository
      */
     private $personRepository;
+    /**
+     * @var MessageRepository
+     */
+    private $messageRepository;
 
-    public function __construct(EntityManager $manager, Renderer $renderer, PersonRepository $personRepository, ?string $name = null)
+    public function __construct(EntityManager $manager,
+                                Renderer $renderer,
+                                PersonRepository $personRepository,
+                                MessageRepository $messageRepository,
+                                ?string $name = null)
     {
         parent::__construct($name);
         $this->manager = $manager;
         $this->renderer = $renderer;
         $this->personRepository = $personRepository;
+        $this->messageRepository = $messageRepository;
     }
 
     protected function configure()
@@ -72,13 +82,18 @@ class CreateStatisticsCommand extends Command
             return 1;
         }
 
+        $options = [
+            'persons' => $this->personRepository->getClassement($conversation),
+            'conversation' => $conversation,
+            'total' => $this->messageRepository->countMessages($conversation),
+            'ratio' => $this->messageRepository->ratio($conversation),
+            'firstMessage' => $this->messageRepository->getFirstMessage($conversation),
+        ];
+
         $this->renderer->output(
             'conversation.html.twig',
             "output/conversations/$conversationName.html",
-            [
-                'persons' => $this->personRepository->getClassement($conversation),
-                'conversation' => $conversation
-            ]
+            $options
         );
 
         return 0;
