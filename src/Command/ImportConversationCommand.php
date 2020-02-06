@@ -6,7 +6,10 @@ use App\Entity\Conversation;
 use App\Entity\Person;
 use App\Service\DataFolderReader;
 use App\Service\EntityConverter;
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ImportConversationCommand extends Command
 {
-    private const PROGRESS_BAR_FORMAT = '%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%';
+    const PROGRESS_BAR_FORMAT = '%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%';
 
     private static $name = 'app:import:conversation';
 
@@ -61,9 +64,9 @@ class ImportConversationCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws MappingException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -108,8 +111,8 @@ class ImportConversationCommand extends Command
      * @param string $folder
      * @param string $name
      * @return Conversation
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     private function importConversation(string $folder, string $name): Conversation
     {
@@ -119,8 +122,8 @@ class ImportConversationCommand extends Command
     /**
      * @param Conversation $conversation
      * @param array $persons
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     private function importPersons(Conversation $conversation, array $persons): void
     {
@@ -139,9 +142,9 @@ class ImportConversationCommand extends Command
     /**
      * @param Conversation $conversation
      * @param array $messages
-     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws MappingException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     private function importMessages(Conversation $conversation, array $messages): void
     {
