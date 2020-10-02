@@ -2,9 +2,9 @@
 
 use Symfony\Component\Console\Application;
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$em = require_once('config/bootstrap.php');
+$em = require_once __DIR__ . '/../config/bootstrap.php';
 
 $container = new DI\Container();
 

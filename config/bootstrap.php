@@ -1,12 +1,11 @@
 <?php
+
 use Symfony\Component\Dotenv\Dotenv;
+
 require_once(__DIR__ . '/../vendor/autoload.php');
 
 $dotenv = new Dotenv();
-$dotenv->load(__DIR__.'/../.env');
-
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
+$dotenv->load(__DIR__ . '/../.env');
 
 $entitiesPath = [
     __DIR__ . '/../src/Entity'
@@ -25,13 +24,13 @@ $connectionParams = array(
     'driver' => 'pdo_pgsql',
 );
 
-$config = Setup::createAnnotationMetadataConfiguration(
+$config = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
     $entitiesPath,
     $isDevMode,
     $proxyDir,
     $cache,
     $useSimpleAnnotationReader
 );
-$entityManager = EntityManager::create($connectionParams, $config);
+$entityManager = Doctrine\ORM\EntityManager::create($connectionParams, $config);
 
 return $entityManager;

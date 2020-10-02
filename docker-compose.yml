@@ -14,9 +14,3 @@ services:
     build: .
     volumes: 
       - .:/app
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-    - 8080:8080
