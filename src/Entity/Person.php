@@ -23,22 +23,22 @@ class Person
     /**
      * @ORM\Column(type="string")
      */
-    private string $name;
+    private ?string $name = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Message", mappedBy="author")
      */
-    private Collection $messages;
+    private ?Collection $messages = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Conversation", inversedBy="persons")
      */
-    private Conversation $conversation;
+    private ?Conversation $conversation = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="author")
      */
-    private Collection $reactions;
+    private ?Collection $reactions = null;
 
     /**
      * @return int

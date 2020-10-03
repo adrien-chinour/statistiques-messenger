@@ -9,8 +9,11 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
     - 5432:5432
+    volumes:
+    - ./data/db/:/var/lib/postgresql/data
 
   app:
     build: .
     volumes: 
       - .:/app
+      - ./data/tmp:/tmp

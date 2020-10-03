@@ -23,27 +23,27 @@ class Conversation
     /**
      * @ORM\Column(type="string")
      */
-    private string $uuid;
+    private ?string $uuid = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Person", mappedBy="conversation")
      */
-    private Collection $persons;
+    private ?Collection $persons = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Message", mappedBy="conversation")
      */
-    private Collection $messages;
+    private ?Collection $messages = null;
 
     /**
      * @ORM\Column(type="string")
      */
-    private string $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private string $folder;
+    private ?string $folder = null;
 
     public function __toString()
     {

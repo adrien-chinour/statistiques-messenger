@@ -24,27 +24,27 @@ class Message
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="messages")
      */
-    private Person $author;
+    private ?Person $author = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Conversation", inversedBy="messages")
      */
-    private Conversation $conversation;
+    private ?Conversation $conversation = null;
 
     /**
      * @ORM\Column(type="text")
      */
-    private string $content;
+    private ?string $content = null;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTime $datetime;
+    private ?DateTime $datetime = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="message")
      */
-    private Collection $reactions;
+    private ?Collection $reactions = null;
 
     public function getId(): int
     {

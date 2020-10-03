@@ -21,17 +21,17 @@ class Reaction
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="reactions", cascade={"persist"}))
      */
-    private Person $author;
+    private ?Person $author = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Message", inversedBy="reactions", cascade={"persist"}))
      */
-    private Message $message;
+    private ?Message $message = null;
 
     /**
      * @ORM\Column(type="string")
      */
-    private string $content;
+    private ?string $content = null;
 
     public function getId(): int
     {
