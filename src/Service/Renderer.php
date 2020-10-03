@@ -13,10 +13,7 @@ use Twig\Loader\FilesystemLoader;
 class Renderer
 {
 
-    /**
-     * @var Environment
-     */
-    private $twig;
+    private Environment $twig;
 
     public function __construct()
     {
@@ -26,8 +23,8 @@ class Renderer
 
     /**
      * @param string $template name of template to use
-     * @param string $output   name of output file path from root application folder
-     * @param array $options   options for template rendering
+     * @param string $output name of output file path from root application folder
+     * @param array $options options for template rendering
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError

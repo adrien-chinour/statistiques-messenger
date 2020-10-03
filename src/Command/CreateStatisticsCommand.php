@@ -13,35 +13,20 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Service\Renderer;
 
-class CreateStatisticsCommand extends Command
+final class CreateStatisticsCommand extends Command
 {
 
-    private static $name = 'app:statistics:create';
+    private static string $name = 'app:statistics:create';
 
-    /**
-     * @var EntityManager
-     */
-    private $manager;
+    private EntityManager $manager;
 
-    /**
-     * @var Renderer
-     */
-    private $renderer;
+    private Renderer $renderer;
 
-    /**
-     * @var PersonRepository
-     */
-    private $personRepository;
-    /**
-     * @var MessageRepository
-     */
-    private $messageRepository;
+    private PersonRepository $personRepository;
 
-    public function __construct(EntityManager $manager,
-                                Renderer $renderer,
-                                PersonRepository $personRepository,
-                                MessageRepository $messageRepository,
-                                ?string $name = null)
+    private MessageRepository $messageRepository;
+
+    public function __construct(EntityManager $manager, Renderer $renderer, PersonRepository $personRepository, MessageRepository $messageRepository, ?string $name = null)
     {
         parent::__construct($name);
         $this->manager = $manager;
@@ -83,7 +68,7 @@ class CreateStatisticsCommand extends Command
         }
 
         $options = [
-            'persons' => $this->personRepository->getClassement($conversation),
+            'persons' => $this->personRepository->getRanking($conversation),
             'conversation' => $conversation,
             'total' => $this->messageRepository->countMessages($conversation),
             'ratio' => $this->messageRepository->ratio($conversation),

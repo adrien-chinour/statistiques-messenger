@@ -9,10 +9,7 @@ use Doctrine\ORM\EntityManager;
 class MessageRepository
 {
 
-    /**
-     * @var EntityManager
-     */
-    private $manager;
+    private EntityManager $manager;
 
     public function __construct(EntityManager $manager)
     {

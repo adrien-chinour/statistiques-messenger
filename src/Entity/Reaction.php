@@ -15,84 +15,56 @@ class Reaction
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @var integer
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="reactions", cascade={"persist"}))
-     * @var Person
      */
-    private $author;
+    private Person $author;
 
     /**
      * @ORM\ManyToOne(targetEntity="Message", inversedBy="reactions", cascade={"persist"}))
-     * @var Message
      */
-    private $message;
+    private Message $message;
 
     /**
      * @ORM\Column(type="string")
-     * @var string
      */
-    private $content;
+    private string $content;
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return Person
-     */
     public function getAuthor(): Person
     {
         return $this->author;
     }
 
-    /**
-     * @param Person $author
-     * @return Reaction
-     */
     public function setAuthor(Person $author): Reaction
     {
         $this->author = $author;
         return $this;
     }
 
-    /**
-     * @return Message
-     */
     public function getMessage(): Message
     {
         return $this->message;
     }
 
-    /**
-     * @param Message $message
-     * @return Reaction
-     */
     public function setMessage(Message $message): Reaction
     {
         $this->message = $message;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getContent(): string
     {
         return $this->content;
     }
 
-    /**
-     * @param string $content
-     * @return Reaction
-     */
     public function setContent(string $content): Reaction
     {
         $this->content = $content;

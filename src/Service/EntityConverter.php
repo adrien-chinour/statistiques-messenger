@@ -13,17 +13,10 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Generator;
 
-/*
- * TODO split this  by entity
- */
-
 class EntityConverter
 {
 
-    /**
-     * @var EntityManager
-     */
-    private $manager;
+    private EntityManager $manager;
 
     public function __construct(EntityManager $manager)
     {
@@ -135,6 +128,7 @@ class EntityConverter
 
     /**
      * @param array $reactions
+     * @param array $persons
      * @param Message $message
      * @throws ORMException
      */

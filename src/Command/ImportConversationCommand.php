@@ -16,29 +16,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class ImportConversationCommand extends Command
+final class ImportConversationCommand extends Command
 {
     const PROGRESS_BAR_FORMAT = '%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%';
 
-    private static $name = 'app:import:conversation';
+    private static string $name = 'app:import:conversation';
 
-    /**
-     * @var DataFolderReader
-     */
-    private $folderReader;
-    /**
-     * @var EntityConverter
-     */
-    private $converter;
-    /**
-     * @var EntityManager
-     */
-    private $manager;
+    private DataFolderReader $folderReader;
 
-    /**
-     * @var SymfonyStyle
-     */
-    private $io;
+    private EntityConverter $converter;
+
+    private EntityManager $manager;
+
+    private SymfonyStyle $io;
 
     public function __construct(DataFolderReader $folderReader, EntityConverter $converter, EntityManager $manager, $name = null)
     {

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,33 +17,28 @@ class Person
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
-     * @var integer
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string")
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\OneToMany(targetEntity="Message", mappedBy="author")
-     * @var Message[]
      */
-    private $messages;
+    private Collection $messages;
 
     /**
      * @ORM\ManyToOne(targetEntity="Conversation", inversedBy="persons")
-     * @var Conversation
      */
-    private $conversation;
+    private Conversation $conversation;
 
     /**
      * @ORM\OneToMany(targetEntity="Reaction", mappedBy="author")
-     * @var Reaction[]
      */
-    private $reactions;
+    private Collection $reactions;
 
     /**
      * @return int
@@ -69,36 +66,22 @@ class Person
         return $this;
     }
 
-    /**
-     * @return Message[]
-     */
-    public function getMessages(): array
+    public function getMessages(): Collection
     {
         return $this->messages;
     }
 
-    /**
-     * @param Message[] $messages
-     * @return Person
-     */
     public function setMessages(array $messages): Person
     {
-        $this->messages = $messages;
+        $this->messages = new ArrayCollection($messages);
         return $this;
     }
 
-    /**
-     * @return Conversation
-     */
     public function getConversation(): Conversation
     {
         return $this->conversation;
     }
 
-    /**
-     * @param Conversation $conversation
-     * @return Person
-     */
     public function setConversation(Conversation $conversation): Person
     {
         $this->conversation = $conversation;
@@ -110,21 +93,14 @@ class Person
         return count($this->messages);
     }
 
-    /**
-     * @return Reaction[]
-     */
-    public function getReactions(): array
+    public function getReactions(): Collection
     {
         return $this->reactions;
     }
 
-    /**
-     * @param Reaction[] $reactions
-     * @return Person
-     */
     public function setReactions(array $reactions): Person
     {
-        $this->reactions = $reactions;
+        $this->reactions = new ArrayCollection($reactions);
         return $this;
     }
 

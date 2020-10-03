@@ -10,17 +10,14 @@ use Doctrine\ORM\EntityManager;
 class PersonRepository
 {
 
-    /**
-     * @var EntityManager
-     */
-    private $manager;
+    private EntityManager $manager;
 
     public function __construct(EntityManager $manager)
     {
         $this->manager = $manager;
     }
 
-    public function getClassement(Conversation $conversation)
+    public function getRanking(Conversation $conversation)
     {
         $query = $this
             ->manager->createQueryBuilder()
