@@ -5,68 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-    <style>
-        .card-stat {
-            font-size: 3.5rem;
-        }
-    </style>
-
     <title>Conversation {{ conversation.name }}</title>
 </head>
 <body>
 
-<header class="container text-center mb-4 mt-4">
-    <h1 class="display-4">Statistiques de "{{ conversation.name }}"</h1>
-</header>
+{{ content | raw }}
 
-<div class="container">
-
-    <div class="alert alert-warning" role="alert">
-        Projet en alpha, ...
-    </div>
-
-    <div class="row justify-content-around">
-        <div class="col-4">
-            <div class="card text-white bg-primary mb-3 text-center">
-                <div class="card-header">Nombre total de message</div>
-                <div class="card-body card-stat">
-                    {{ total | number_format(0, ',', ' ') }}
-                </div>
-            </div>
-        </div>
-        <div class="col-4">
-            <div class="card text-white bg-primary mb-3 text-center">
-                <div class="card-header">Moyenne journalière</div>
-                <div class="card-body card-stat">
-                    {{ ratio | number_format(2) }}
-                </div>
-            </div>
-        </div>
-    </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Classement</th>
-            <th>Nom</th>
-            <th>Nombre de messages</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% set i = 1 %}
-        {% for person in persons %}
-            <tr>
-                <td>N°{{ i }}</td>
-                <td>{{ person.name }}</td>
-                <td>{{ person.nb_message }}</td>
-            </tr>
-            {% set i = i+1 %}
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
 </body>
 </html>

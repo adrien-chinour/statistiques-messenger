@@ -35,8 +35,20 @@ class Renderer
             mkdir(dirname($output), 0777, true);
         }
 
-        file_put_contents($output, $this->twig->render($template, $options));
+        file_put_contents($output, $this->write($template, $options));
     }
 
+    /**
+     * @param string $template
+     * @param array $options
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function write(string $template, array $options = [])
+    {
+        return $this->twig->render($template, $options);
+    }
 
 }

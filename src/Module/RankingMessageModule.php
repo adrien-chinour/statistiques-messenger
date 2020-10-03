@@ -1,26 +1,25 @@
 <?php
 
-namespace App\Repository;
+namespace App\Module;
 
 use App\Entity\Conversation;
 use App\Entity\Message;
 use App\Entity\Person;
-use Doctrine\ORM\EntityManager;
 
-class PersonRepository
+final class RankingMessageModule extends Module
 {
+    public int $weight = 0;
 
-    private EntityManager $manager;
-
-    public function __construct(EntityManager $manager)
+    public function build(Conversation $conversation): string
     {
-        $this->manager = $manager;
+        $ranking = $this->getRanking($conversation);
+
+        return $this->render("modules/ranking-message.html.twig", compact($ranking));
     }
 
-    public function getRanking(Conversation $conversation)
+    private function getRanking(Conversation $conversation)
     {
-        $query = $this
-            ->manager->createQueryBuilder()
+        $query = $this->createQueryBuilder()
             ->select('p.name, count(m.id) as nb_message')
             ->from(Person::class, 'p')
             ->where('p.conversation = :conversation_id')
@@ -32,5 +31,4 @@ class PersonRepository
 
         return $query->execute();
     }
-
 }

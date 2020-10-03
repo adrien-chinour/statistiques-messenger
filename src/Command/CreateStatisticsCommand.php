@@ -3,8 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Conversation;
-use App\Repository\MessageRepository;
-use App\Repository\PersonRepository;
+use App\Module\ModuleFactory;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,19 +19,16 @@ final class CreateStatisticsCommand extends Command
 
     private EntityManager $manager;
 
+    private ModuleFactory $factory;
+
     private Renderer $renderer;
 
-    private PersonRepository $personRepository;
-
-    private MessageRepository $messageRepository;
-
-    public function __construct(EntityManager $manager, Renderer $renderer, PersonRepository $personRepository, MessageRepository $messageRepository, ?string $name = null)
+    public function __construct(EntityManager $manager, ModuleFactory $factory, Renderer $renderer, ?string $name = null)
     {
         parent::__construct($name);
         $this->manager = $manager;
+        $this->factory = $factory;
         $this->renderer = $renderer;
-        $this->personRepository = $personRepository;
-        $this->messageRepository = $messageRepository;
     }
 
     protected function configure()
@@ -46,9 +42,6 @@ final class CreateStatisticsCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -67,18 +60,16 @@ final class CreateStatisticsCommand extends Command
             return 1;
         }
 
-        $options = [
-            'persons' => $this->personRepository->getRanking($conversation),
-            'conversation' => $conversation,
-            'total' => $this->messageRepository->countMessages($conversation),
-            'ratio' => $this->messageRepository->ratio($conversation),
-            'firstMessage' => $this->messageRepository->getFirstMessage($conversation),
-        ];
+        // write output
+        $content = "";
+        foreach ($this->factory->loadModules() as $module) {
+            $content .= $module->build($conversation);
+        }
 
         $this->renderer->output(
             'conversation.html.twig',
             "output/conversations/$conversationName.html",
-            $options
+            ["content" => $content]
         );
 
         return 0;
