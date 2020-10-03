@@ -1,0 +1,21 @@
+<div class="container">
+    <h2>Classement du plus gros parleur</h2>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            <th>Nom</th>
+            <th>Messages</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in ranking %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.nb_message }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

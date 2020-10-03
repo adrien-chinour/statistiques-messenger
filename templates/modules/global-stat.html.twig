@@ -1,2 +1,13 @@
-<h1>{{ count }}</h1>
-<h1>{{ ratio }}</h1>
+<div class="container">
+    <h2>Statistiques globale</h2>
+    <table class="table">
+        <tr>
+            <th class="table-dark">Nombre de messages envoyés</th>
+            <td>{{ count | number_format(0, ',', ' ') }}</td>
+        </tr>
+        <tr>
+            <th class="table-dark">Moyenne journalière</th>
+            <td>{{ ratio |number_format(0) }}</td>
+        </tr>
+    </table>
+</div>

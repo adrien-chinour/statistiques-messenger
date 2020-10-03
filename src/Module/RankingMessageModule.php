@@ -14,7 +14,7 @@ final class RankingMessageModule extends Module
     {
         $ranking = $this->getRanking($conversation);
 
-        return $this->render("modules/ranking-message.html.twig", compact($ranking));
+        return $this->render("modules/ranking-message.html.twig", ["ranking" => $ranking]);
     }
 
     private function getRanking(Conversation $conversation)
