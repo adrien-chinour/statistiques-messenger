@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 final class CreateStatisticsCommand extends Command
 {
 
-    private static string $name = 'app:statistics:create';
+    private static string $name = 'conversation:stat';
 
     private EntityManager $manager;
 
@@ -33,9 +33,7 @@ final class CreateStatisticsCommand extends Command
 
     protected function configure()
     {
-        $this
-            ->setName(self::$name)
-            ->setAliases(['a:s:c']);
+        $this->setName(self::$name);
     }
 
     /**
@@ -60,21 +58,28 @@ final class CreateStatisticsCommand extends Command
             return 1;
         }
 
-        // write output
-        $content = "";
-        foreach ($this->factory->loadModules() as $module) {
-            $content .= $module->build($conversation);
-        }
-
         try {
-            $output = "output/conversations/$conversationName.html";
-            $this->renderer->output('conversation.html.twig', $output, ["content" => $content]);
+            $this->renderer->output(
+                'conversation.html.twig',
+                "output/conversations/$conversationName.html",
+                ["content" => $this->loadModuleContent($conversation)]
+            );
         } catch (\Exception $e) {
             $io->error($e->getMessage());
             return 1;
         }
 
         return 0;
+    }
+
+    private function loadModuleContent(Conversation $conversation): string
+    {
+        $content = "";
+        foreach ($this->factory->loadModules() as $module) {
+            $content .= $module->build($conversation);
+        }
+
+        return $content;
     }
 
 }

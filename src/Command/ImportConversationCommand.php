@@ -21,7 +21,7 @@ final class ImportConversationCommand extends Command
 {
     const PROGRESS_BAR_FORMAT = '%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%';
 
-    private static string $name = 'app:import:conversation';
+    private static string $name = 'conversation:import';
 
     private DataFolderReader $folderReader;
 
@@ -38,9 +38,7 @@ final class ImportConversationCommand extends Command
 
     protected function configure()
     {
-        $this
-            ->setName(self::$name)
-            ->setAliases(['a:i:c']);
+        $this->setName(self::$name);
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
