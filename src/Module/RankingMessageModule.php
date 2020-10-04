@@ -2,11 +2,12 @@
 
 namespace App\Module;
 
-use App\Entity\Conversation;
-use App\Entity\Message;
-use App\Entity\Person;
+use App\Core\Module\AbstractModule;
+use App\Core\Entity\Conversation;
+use App\Core\Entity\Message;
+use App\Core\Entity\Person;
 
-final class RankingMessageModule extends Module
+final class RankingMessageModule extends AbstractModule
 {
     public int $weight = 0;
 

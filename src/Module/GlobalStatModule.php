@@ -2,13 +2,14 @@
 
 namespace App\Module;
 
-use App\Entity\Conversation;
-use App\Entity\Message;
+use App\Core\Entity\Conversation;
+use App\Core\Entity\Message;
+use App\Core\Module\AbstractModule;
 
 /**
  * This module provide global statistics : number of message, average day message
  */
-final class GlobalStatModule extends Module
+final class GlobalStatModule extends AbstractModule
 {
 
     public int $weight = 100;

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Module;
+namespace App\Core\Module;
 
-use App\Service\Renderer;
+use App\Core\Renderer;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 
-abstract class Module implements ModuleInterface
+abstract class AbstractModule implements ModuleInterface
 {
     public int $weight = 0;
 

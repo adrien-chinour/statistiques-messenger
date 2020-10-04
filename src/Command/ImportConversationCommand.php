@@ -2,10 +2,11 @@
 
 namespace App\Command;
 
-use App\Entity\Conversation;
-use App\Entity\Person;
-use App\Service\DataFolderReader;
-use App\Service\EntityConverter;
+use App\Core\DataFolderReader;
+use App\Core\Entity\Conversation;
+use App\Core\Entity\Message;
+use App\Core\Entity\Person;
+use App\Core\Entity\Reaction;
 use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
@@ -24,17 +25,14 @@ final class ImportConversationCommand extends Command
 
     private DataFolderReader $folderReader;
 
-    private EntityConverter $converter;
-
     private EntityManager $manager;
 
     private SymfonyStyle $io;
 
-    public function __construct(DataFolderReader $folderReader, EntityConverter $converter, EntityManager $manager, $name = null)
+    public function __construct(DataFolderReader $folderReader, EntityManager $manager, $name = null)
     {
         parent::__construct($name);
         $this->folderReader = $folderReader;
-        $this->converter = $converter;
         $this->manager = $manager;
     }
 
@@ -106,7 +104,15 @@ final class ImportConversationCommand extends Command
      */
     private function importConversation(string $folder, string $name): Conversation
     {
-        return $this->converter->importConversation($folder, $name);
+        $conversation = new Conversation();
+        $conversation
+            ->setName($name)
+            ->setUuid(md5(uniqid()))
+            ->setFolder($folder);
+        $this->manager->persist($conversation);
+        $this->manager->flush();
+
+        return $conversation;
     }
 
     /**
@@ -121,10 +127,20 @@ final class ImportConversationCommand extends Command
         $pb->setFormat(self::PROGRESS_BAR_FORMAT);
 
         $pb->start();
-        foreach ($persons as $chunk) {
-            foreach ($this->converter->importPersons($conversation, $chunk) as $line) {
-                $pb->advance();
+        foreach ($persons as $person) {
+            $name = $person["name"];
+            $exist = $this->manager->getRepository(Person::class)->findOneBy(['conversation' => $conversation, 'name' => $name]);
+
+            if ($exist === null) {
+                $entity = new Person();
+                $entity
+                    ->setName($name)
+                    ->setConversation($conversation);
+
+                $this->manager->persist($entity);
+                $this->manager->flush();
             }
+            $pb->advance();
         }
         $pb->finish();
     }
@@ -144,12 +160,89 @@ final class ImportConversationCommand extends Command
         $pb->setFormat(self::PROGRESS_BAR_FORMAT);
 
         $pb->start();
-        foreach ($messages as $chunk) {
-            foreach ($this->converter->importMessages($conversation, $persons, $chunk) as $line) {
-                $pb->advance();
+        $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
+
+        $chunk = 0;
+        foreach ($messages as $message) {
+            $chunk += 1;
+            $name = $message["sender_name"];
+            $person = $this->getAuthor($persons, $name);
+
+            if ($person === null) {
+                $person = new Person();
+                $person
+                    ->setName($name)
+                    ->setConversation($conversation);
+                $this->manager->persist($person);
+                $this->manager->flush();
+                $persons[] = $person;
+            }
+
+            if (isset($message["content"]) && $message["type"] == "Generic" && $message["content"] !== null) {
+                $timestamp = round($message['timestamp_ms'] / 1000);
+
+                $entity = new Message();
+                $entity
+                    ->setConversation($conversation)
+                    ->setContent($message["content"])
+                    ->setAuthor($person)
+                    ->setDatetime(new \DateTime("@$timestamp"));
+                $this->manager->persist($entity);
+
+                if (isset($message["reactions"])) {
+                    $this->importReactions($message['reactions'], $persons, $entity);
+                }
+            }
+
+            if ($chunk % 100 === 0) {
+                $this->manager->flush();
+                $this->manager->clear(Message::class);
+                $this->manager->clear(Reaction::class);
+            }
+
+            $pb->advance();
+        }
+
+        $this->manager->flush();
+        $pb->finish();
+    }
+
+    /**
+     * @param array $reactions
+     * @param array $persons
+     * @param Message $message
+     * @throws ORMException
+     */
+    private function importReactions(array $reactions, array $persons, Message $message)
+    {
+        foreach ($reactions as $reaction) {
+
+            $actor = $this->getAuthor($persons, $reaction['actor']);
+            if ($actor === null) {
+                $actor = (new Person())
+                    ->setName($reaction['actor'])
+                    ->setConversation($message->getConversation());
+                $this->manager->persist($actor);
+            }
+
+            $entity = (new Reaction())
+                ->setAuthor($actor)
+                ->setContent($reaction["reaction"])
+                ->setMessage($message);
+            $this->manager->persist($entity);
+        }
+    }
+
+    private function getAuthor(array $persons, string $name): ?Person
+    {
+        /** @var Person $person */
+        foreach ($persons as $person) {
+            if ($person->getName() === $name) {
+                return $person;
             }
         }
-        $pb->finish();
+
+        return null;
     }
 
     private function getChunkSize(array $chunks): int

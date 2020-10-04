@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Module;
+namespace App\Core\Module;
 
-use App\Entity\Conversation;
+use App\Core\Entity\Conversation;
 
 interface ModuleInterface
 {

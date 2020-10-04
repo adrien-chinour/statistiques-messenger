@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service;
+namespace App\Core;
 
 class DataFolderReader
 {
 
     public function getInboxFolder(): string
     {
-        return __DIR__ . '/../../data/messages/inbox';
+        return implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'data', 'messages', 'inbox']);
     }
 
     public function checkMessengerFolderExist(): bool

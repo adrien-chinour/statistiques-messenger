@@ -2,15 +2,15 @@
 
 namespace App\Command;
 
-use App\Entity\Conversation;
-use App\Module\ModuleFactory;
+use App\Core\Entity\Conversation;
+use App\Core\Module\ModuleFactory;
+use App\Core\Renderer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use App\Service\Renderer;
 
 final class CreateStatisticsCommand extends Command
 {
@@ -66,11 +66,13 @@ final class CreateStatisticsCommand extends Command
             $content .= $module->build($conversation);
         }
 
-        $this->renderer->output(
-            'conversation.html.twig',
-            "output/conversations/$conversationName.html",
-            ["content" => $content]
-        );
+        try {
+            $output = "output/conversations/$conversationName.html";
+            $this->renderer->output('conversation.html.twig', $output, ["content" => $content]);
+        } catch (\Exception $e) {
+            $io->error($e->getMessage());
+            return 1;
+        }
 
         return 0;
     }

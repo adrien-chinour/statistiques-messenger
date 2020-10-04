@@ -1,8 +1,6 @@
 <?php
 
-
-namespace App\Service;
-
+namespace App\Core;
 
 use Twig\Environment;
 use Twig\Error\LoaderError;

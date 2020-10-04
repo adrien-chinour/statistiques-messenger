@@ -1,12 +1,9 @@
 <?php
 
+namespace App\Core\Module;
 
-namespace App\Module;
-
-
-use App\Service\Renderer;
+use App\Core\Renderer;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\QueryBuilder;
 
 class ModuleFactory
 {
@@ -37,18 +34,22 @@ class ModuleFactory
 
     private function getModuleList()
     {
+        // find classes in src/Module folder
         $classes = array_map(function ($file) {
             return 'App\\Module\\' . str_replace('.php', '', $file);
-        }, scandir(__DIR__));
+        }, scandir(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'Module'])));
 
+        // check if classes is correctly defined
         $classes = array_filter($classes, function ($class) {
             return class_exists($class);
         });
 
+        // check if classes have abstract Module as parent
         $classes = array_filter($classes, function ($class) {
-            return in_array(Module::class, class_parents($class));
+            return in_array(AbstractModule::class, class_parents($class));
         });
 
+        // order by weight in DESC mode
         usort($classes, function ($a, $b) {
             return get_class_vars($a)["weight"] < get_class_vars($b)["weight"];
         });
