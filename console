@@ -8,21 +8,22 @@ else
     if [ "$(docker ps -aq -f status=exited -f name=db)" ]; then
       docker-compose down
     fi
-    docker-compose up -d
+    docker-compose up --no-start
+    docker-compose start db
   fi
 fi
 
 if ! [ -d "./vendor/" ]; then
   echo "Installing dependencies files"
   if [ $DOCKER -eq 1 ]; then
-    docker-compose run app composer install
+    docker-compose run --rm app composer install
   else
     composer install
   fi
 fi
 
 if [ $DOCKER -eq 1 ]; then
-  docker-compose run app php src/application.php "$@"
+  docker-compose run --rm app php src/application.php "$@"
 else
   php src/application.php "$@"
 fi
