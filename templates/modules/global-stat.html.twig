@@ -1,13 +1,12 @@
-<div class="container">
-    <h2>Statistiques globale</h2>
-    <table class="table">
-        <tr>
-            <th class="table-dark">Nombre de messages envoyés</th>
-            <td>{{ count | number_format(0, ',', ' ') }}</td>
-        </tr>
-        <tr>
-            <th class="table-dark">Moyenne journalière</th>
-            <td>{{ ratio |number_format(0) }}</td>
-        </tr>
-    </table>
+<div class="container text-center">
+
+    <h2 class="display-3 mb-3">Quelques chiffres</h2>
+
+    <h3>
+        Un total de <strong>{{ count | number_format(0, ',', ' ') }}</strong> messages envoyés.
+    </h3>
+
+    <h3>
+        Une moyenne de <strong>{{ ratio |number_format(0) }}</strong> messages par jour.
+    </h3>
 </div>

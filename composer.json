@@ -27,7 +27,10 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "config/setup.sh"
+      "config/setup-db.sh"
+    ],
+    "setup": [
+      "config/setup-db.sh"
     ]
   }
 }

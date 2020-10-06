@@ -1,11 +1,14 @@
 <div class="container">
-    <h2>Classement du plus gros parleur</h2>
-    <table class="table">
+    <h2 class="display-3 text-center">Les beaux parleurs</h2>
+
+    <table class="table table-striped" data-toggle="table">
         <thead class="thead-dark">
         <tr>
             <th>#</th>
             <th>Nom</th>
-            <th>Messages</th>
+            <th data-sortable="true">Messages</th>
+            <th data-sortable="true">Réactions reçu</th>
+            <th data-sortable="true">Ratio</th>
         </tr>
         </thead>
         <tbody>
@@ -14,6 +17,8 @@
                 <td>{{ loop.index }}</td>
                 <td>{{ row.name }}</td>
                 <td>{{ row.nb_message }}</td>
+                <td>{{ row.nb_reaction }}</td>
+                <td>{{ row.ratio | number_format(4, ',', ' ') }}</td>
             </tr>
         {% endfor %}
         </tbody>

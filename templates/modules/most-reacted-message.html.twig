@@ -1,0 +1,17 @@
+<div class="container">
+    <h2 class="display-3 text-center">Ça a fait réagir !</h2>
+
+    <ul class="list-unstyled">
+        {% for row in ranking %}
+            <li class="media align-self-start border-dark mb-2">
+                <div class="mr-3">
+                    <p class="display-4"># {{ loop.index }}</p>
+                </div>
+                <div class="media-body">
+                    <h5 class="mt-0 mb-1">Par <strong>{{ row.name }}</strong> | {{ row.nbReactions }} réactions</h5>
+                    {{ row.content }}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

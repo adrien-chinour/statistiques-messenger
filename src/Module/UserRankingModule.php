@@ -2,26 +2,29 @@
 
 namespace App\Module;
 
-use App\Core\Module\AbstractModule;
 use App\Core\Entity\Conversation;
 use App\Core\Entity\Message;
 use App\Core\Entity\Person;
+use App\Core\Module\AbstractModule;
 
-final class RankingMessageModule extends AbstractModule
+class UserRankingModule extends AbstractModule
 {
-    public int $weight = 0;
+    public int $weight = 2;
 
     public function build(Conversation $conversation): string
     {
-        $ranking = $this->getRanking($conversation);
+        $ranking = array_map(function ($row) {
+            $row["ratio"] = $row["nb_reaction"] / $row["nb_message"];
+            return $row;
+        }, $this->getData($conversation));
 
-        return $this->render("modules/ranking-message.html.twig", ["ranking" => $ranking]);
+        return $this->render("modules/user-ranking.html.twig", ['ranking' => $ranking]);
     }
 
-    private function getRanking(Conversation $conversation)
+    private function getData(Conversation $conversation): array
     {
         $query = $this->createQueryBuilder()
-            ->select('p.name, count(m.id) as nb_message')
+            ->select('p.name, sum(m.nbReactions) as nb_reaction, count(m.id) as nb_message')
             ->from(Person::class, 'p')
             ->where('p.conversation = :conversation_id')
             ->join(Message::class, 'm', 'WITH', 'p.id = m.author')
@@ -32,4 +35,5 @@ final class RankingMessageModule extends AbstractModule
 
         return $query->execute();
     }
+
 }

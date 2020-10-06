@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class ImportConversationCommand extends Command
+final class ConversationImportCommand extends Command
 {
     const PROGRESS_BAR_FORMAT = '%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%';
 
@@ -69,8 +69,8 @@ final class ImportConversationCommand extends Command
         $persons = [];
         foreach ($this->folderReader->getConversationFiles($conversationFolder) as $file) {
             $json = json_decode(file_get_contents("$conversationFolder/$file"), true);
-            $messages[] = $json["messages"];
-            $persons[] = $json["participants"];
+            $messages = array_merge($messages, $json["messages"]);
+            $persons = array_merge($persons, $json["participants"]);
         }
 
         $this->importPersons($conversation, $persons);
@@ -184,6 +184,7 @@ final class ImportConversationCommand extends Command
                     ->setConversation($conversation)
                     ->setContent($message["content"])
                     ->setAuthor($person)
+                    ->setNbReactions(empty($message['reactions']) ? 0 : count($message['reactions']))
                     ->setDatetime(new \DateTime("@$timestamp"));
                 $this->manager->persist($entity);
 

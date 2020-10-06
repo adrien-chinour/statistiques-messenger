@@ -8,7 +8,7 @@ $dotenv = new Dotenv();
 $dotenv->load(__DIR__ . '/../.env');
 
 $entitiesPath = [
-    __DIR__ . '/../src/Entity'
+    __DIR__ . '/../src/Core/Entity'
 ];
 
 $isDevMode = false;

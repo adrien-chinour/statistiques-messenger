@@ -12,7 +12,7 @@ use App\Core\Module\AbstractModule;
 final class GlobalStatModule extends AbstractModule
 {
 
-    public int $weight = 100;
+    public int $weight = 0;
 
     public function build(Conversation $conversation): string
     {

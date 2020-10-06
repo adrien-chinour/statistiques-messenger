@@ -46,6 +46,11 @@ class Message
      */
     private ?Collection $reactions = null;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private ?int $nbReactions = null;
+
     public function getId(): int
     {
         return $this->id;
@@ -103,6 +108,18 @@ class Message
     public function setReactions(array $reactions): Message
     {
         $this->reactions = new ArrayCollection($reactions);
+        return $this;
+    }
+
+    public function getNbReactions(): int
+    {
+        return $this->nbReactions;
+    }
+
+    public function setNbReactions(?int $nbReactions): Message
+    {
+        $this->nbReactions = $nbReactions;
+
         return $this;
     }
 

@@ -49,9 +49,9 @@ class ModuleFactory
             return in_array(AbstractModule::class, class_parents($class));
         });
 
-        // order by weight in DESC mode
+        // order by weight in ASC mode
         usort($classes, function ($a, $b) {
-            return get_class_vars($a)["weight"] < get_class_vars($b)["weight"];
+            return get_class_vars($a)["weight"] > get_class_vars($b)["weight"];
         });
 
         return $classes;
