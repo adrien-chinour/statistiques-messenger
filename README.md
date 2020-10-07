@@ -16,9 +16,11 @@ Firstly, you have to download Messenger data from Facebook in JSON file.
 
 ![selection](https://github.com/adrien-chinour/statistiques-messenger/blob/master/.github/assets/Uun4uJe.png?raw=true)
 
-Put `messages` folder from your export in `data` folder.
+**Step 3 : export data**
 
-Now you are ready for extract stats !
+Export data from zip file and put `messages` folder from your export in `data` folder.
+
+**Now you are ready for extract stats !**
 
 ## Usage
 
@@ -31,15 +33,19 @@ If docker-compose is not define, this script will use your local php environment
 
 ### Import conversation
 
-Command `./console conversation:import`
+```
+./console conversation:import
+```
 
 ### Generate stats
 
-Command `./console conversation:stat`
+```
+./console conversation:stat
+```
 
 ### Deployment
 
-Simply deploy stats with [commons.host](commons.host).
+Simply deploy the generated page with [commons.host](https://commons.host).
 
 **Step 1 : Install CLI**
 ```
