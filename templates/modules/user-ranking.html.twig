@@ -9,6 +9,7 @@
             <th data-sortable="true">Messages</th>
             <th data-sortable="true">Réactions reçu</th>
             <th data-sortable="true">Ratio</th>
+            <th data-sortable="true">Réactions envoyées</th>
         </tr>
         </thead>
         <tbody>
@@ -19,6 +20,7 @@
                 <td>{{ row.nb_message }}</td>
                 <td>{{ row.nb_reaction }}</td>
                 <td>{{ row.ratio | number_format(4, ',', ' ') }}</td>
+                <td>{{ row.reactions_send }}</td>
             </tr>
         {% endfor %}
         </tbody>

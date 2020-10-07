@@ -61,7 +61,7 @@ final class ConversationStatisticsCommand extends Command
         try {
             $this->renderer->output(
                 'conversation.html.twig',
-                "output/conversations/$conversationName.html",
+                "output/conversations/$conversationName/index.html",
                 ["content" => $this->loadModuleContent($conversation)]
             );
         } catch (\Exception $e) {
