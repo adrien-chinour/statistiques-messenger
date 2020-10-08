@@ -43,7 +43,7 @@ If docker-compose is not define, this script will use your local php environment
 ./console conversation:stat
 ```
 
-### Deployment
+## Deployment
 
 Simply deploy the generated page with [commons.host](https://commons.host).
 
@@ -64,4 +64,91 @@ commonshost deploy --root "output/conversations/MA_CONVERSATION"
 
 > Remove host with `commonshost delete`
 
+## Upgrade
 
+### Add a module
+
+A module is a portion of a generated page. Each module provides independent statistics.
+
+**Step 1 : Module Class**
+
+On `src\Module` add a class for your module and extend ` App\Core\Module\AbstractModule`
+
+```php
+namespace App\Module;
+
+use App\Core\Entity\Conversation;
+use App\Core\Module\AbstractModule;
+
+class DummyModule extends AbstractModule
+{
+
+    public function build(Conversation $conversation): string
+    {
+
+    }
+
+}
+```
+
+** Step 2 : Querying DB**
+
+Your module need to query database to get statistics. `AbstractModule` provide a method `createQueryBuilder` to create a query :
+
+```php
+class DummyModule extends AbstractModule
+{
+
+    public function build(Conversation $conversation): string
+    {
+        $this->createQueryBuilder()
+            ->select('sum(m.nbReactions) as total_reactions')
+            ->from(Message::class, 'm')
+            ->where('m.conversation = :conversation_id')
+            ->setParameter('conversation_id', $conversation->getId())
+            ->getQuery();
+    }
+}
+```
+
+> More information about Doctrine QueryBuilder [here](https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/query-builder.html).
+
+** Step 3 : Rendering information**
+
+On `templates/modules` add a twig file named like your module name : `dummy.html.twig`
+
+On your class add rendering operation :
+
+```php
+class DummyModule extends AbstractModule
+{
+
+    public function build(Conversation $conversation): string
+    {
+        $query = $this->createQueryBuilder()
+            ->select('sum(m.nbReactions) as total_reactions')
+            ->from(Message::class, 'm')
+            ->where('m.conversation = :conversation_id')
+            ->setParameter('conversation_id', $conversation->getId())
+            ->getQuery();
+        
+        $reactions = $query->execute()[0]['total_reactions'];
+
+        return $this->render('modules/dummy.html.twig', ['reactions' => $reactions]);
+    }
+
+}
+```
+
+And on your template you can display data
+
+```twig
+<div class="container text-center">
+
+    <h2 class="display-3 mb-3">important stat</h2>
+
+    <h3>
+        Overall reaction : <strong>{{ reactions }}</strong>
+    </h3>
+</div>
+```
