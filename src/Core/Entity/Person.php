@@ -18,7 +18,7 @@ class Person
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private int $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="string")
@@ -36,7 +36,7 @@ class Person
     private ?Conversation $conversation = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Reaction", mappedBy="author")
+     * @ORM\OneToMany(targetEntity="Reaction", mappedBy="author", cascade={"persist", "remove"})
      */
     private ?Collection $reactions = null;
 

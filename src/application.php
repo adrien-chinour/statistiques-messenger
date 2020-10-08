@@ -13,4 +13,5 @@ $container->set(\Doctrine\ORM\EntityManager::class, $em);
 $application = new Application();
 $application->add($container->get(\App\Command\ConversationImportCommand::class));
 $application->add($container->get(\App\Command\ConversationStatisticsCommand::class));
+$application->add($container->get(\App\Command\ConversationCleanCommand::class));
 $application->run();

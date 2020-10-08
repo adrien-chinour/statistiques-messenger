@@ -18,7 +18,7 @@ class Conversation
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private int $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="string")
@@ -26,17 +26,17 @@ class Conversation
     private ?string $uuid = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Person", mappedBy="conversation")
+     * @ORM\OneToMany(targetEntity="Person", mappedBy="conversation", cascade={"persist", "remove"})
      */
     private ?Collection $persons = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="conversation")
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="conversation", cascade={"persist", "remove"})
      */
     private ?Collection $messages = null;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", unique=true)
      */
     private ?string $name = null;
 

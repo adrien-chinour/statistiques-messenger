@@ -19,7 +19,7 @@ class Message
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    private int $id;
+    private ?int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="messages")
