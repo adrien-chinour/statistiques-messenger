@@ -7,6 +7,7 @@ use App\Core\Entity\Conversation;
 use App\Core\Entity\Message;
 use App\Core\Entity\Person;
 use App\Core\Entity\Reaction;
+use DateTime;
 use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
@@ -76,6 +77,7 @@ final class ConversationImportCommand extends Command
         $this->importPersons($conversation, $persons);
         $this->importMessages($conversation, $messages);
 
+        $this->io->newLine(2);
         $this->io->success("Conversation correctly imported.");
         return 0;
     }
@@ -121,7 +123,7 @@ final class ConversationImportCommand extends Command
      */
     private function importPersons(Conversation $conversation, array $persons): void
     {
-        $pb = $this->io->createProgressBar($this->getChunkSize($persons));
+        $pb = $this->io->createProgressBar(count($persons));
         $pb->setFormat(self::PROGRESS_BAR_FORMAT);
 
         $pb->start();
@@ -154,7 +156,7 @@ final class ConversationImportCommand extends Command
     {
         $persons = $this->manager->getRepository(Person::class)->findBy(['conversation' => $conversation]);
 
-        $pb = $this->io->createProgressBar($this->getChunkSize($messages));
+        $pb = $this->io->createProgressBar(count($messages));
         $pb->setFormat(self::PROGRESS_BAR_FORMAT);
 
         $pb->start();
@@ -185,7 +187,7 @@ final class ConversationImportCommand extends Command
                     ->setContent($message["content"])
                     ->setAuthor($person)
                     ->setNbReactions(empty($message['reactions']) ? 0 : count($message['reactions']))
-                    ->setDatetime(new \DateTime("@$timestamp"));
+                    ->setDatetime(new DateTime("@$timestamp"));
                 $this->manager->persist($entity);
 
                 if (isset($message["reactions"])) {
@@ -242,13 +244,6 @@ final class ConversationImportCommand extends Command
         }
 
         return null;
-    }
-
-    private function getChunkSize(array $chunks): int
-    {
-        return array_reduce($chunks, function ($size, $chunk) {
-            return $size + count($chunk);
-        });
     }
 
 }

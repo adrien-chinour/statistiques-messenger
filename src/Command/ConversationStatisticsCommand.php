@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 final class ConversationStatisticsCommand extends Command
 {
@@ -64,10 +65,12 @@ final class ConversationStatisticsCommand extends Command
                 "output/conversations/$conversationName/index.html",
                 ["content" => $this->loadModuleContent($conversation)]
             );
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $io->error($e->getMessage());
             return 1;
         }
+
+        $io->success(sprintf("Conversation stats generated in %s", "output/conversations/$conversationName/index.html"));
 
         return 0;
     }

@@ -4,6 +4,8 @@ namespace App\Command;
 
 use App\Core\Entity\Conversation;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,8 +46,8 @@ class ConversationCleanCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -58,6 +60,8 @@ class ConversationCleanCommand extends Command
         }
 
         $this->io->progressFinish();
+
+        $this->io->newLine(2);
         $this->io->success("All conversations removed.");
 
         return 0;
