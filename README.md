@@ -31,6 +31,17 @@ If docker-compose is not define, this script will use your local php environment
 
 > Configuring DB env variables on .env file if you don't use docker.
 
+
+_If you have encoding issues, run this script :_
+```bash
+docker-compose run --rm app bash -c "./config/fix-mojiback.sh data/messages"
+```
+
+_For database update, remove `data/db` folder and run this command :_
+```
+docker-compose run --rm app bash -c "./config/setup-db.sh"
+```
+
 ### Import conversation
 
 ```
@@ -41,6 +52,12 @@ If docker-compose is not define, this script will use your local php environment
 
 ```
 ./console conversation:stat
+```
+
+### Clean database
+
+```
+./console conversation:clean
 ```
 
 ## Deployment
@@ -91,7 +108,7 @@ class DummyModule extends AbstractModule
 }
 ```
 
-** Step 2 : Querying DB**
+**Step 2 : Querying DB**
 
 Your module need to query database to get statistics. `AbstractModule` provide a method `createQueryBuilder` to create a query :
 
@@ -113,7 +130,7 @@ class DummyModule extends AbstractModule
 
 > More information about Doctrine QueryBuilder [here](https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/query-builder.html).
 
-** Step 3 : Rendering information**
+**Step 3 : Rendering information**
 
 On `templates/modules` add a twig file named like your module name : `dummy.html.twig`
 
@@ -142,7 +159,7 @@ class DummyModule extends AbstractModule
 
 And on your template you can display data
 
-```twig
+```html
 <div class="container text-center">
 
     <h2 class="display-3 mb-3">important stat</h2>
