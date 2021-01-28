@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Reaction
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -70,5 +69,4 @@ class Reaction
         $this->content = $content;
         return $this;
     }
-
 }

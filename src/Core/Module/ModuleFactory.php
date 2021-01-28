@@ -32,7 +32,7 @@ class ModuleFactory
         return $modules;
     }
 
-    private function getModuleList()
+    private function getModuleList(): array
     {
         // find classes in src/Module folder
         $classes = array_map(function ($file) {

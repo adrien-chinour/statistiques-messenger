@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Person
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -103,5 +102,4 @@ class Person
         $this->reactions = new ArrayCollection($reactions);
         return $this;
     }
-
 }

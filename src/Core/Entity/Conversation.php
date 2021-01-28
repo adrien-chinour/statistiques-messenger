@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Conversation
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -45,7 +44,7 @@ class Conversation
      */
     private ?string $folder = null;
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }

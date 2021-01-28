@@ -51,5 +51,4 @@ class UserRankingModule extends AbstractModule
 
         return $query->execute()[0]["nb_reactions"];
     }
-
 }

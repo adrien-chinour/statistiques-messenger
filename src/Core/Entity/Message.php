@@ -13,7 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Message
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -122,5 +121,4 @@ class Message
 
         return $this;
     }
-
 }

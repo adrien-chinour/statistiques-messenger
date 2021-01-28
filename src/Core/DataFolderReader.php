@@ -4,15 +4,9 @@ namespace App\Core;
 
 class DataFolderReader
 {
-
     public function getInboxFolder(): string
     {
         return implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'data', 'messages', 'inbox']);
-    }
-
-    public function checkMessengerFolderExist(): bool
-    {
-        return is_dir($this->getInboxFolder());
     }
 
     public function getMessageFolders(): array
@@ -31,7 +25,7 @@ class DataFolderReader
     {
         $absoluteFolder = $this->getInboxFolder() . '/' . $conversationFolderName;
 
-        if ($this->isDir($absoluteFolder)) {
+        if (is_dir($absoluteFolder)) {
             return $absoluteFolder;
         }
 
@@ -40,16 +34,10 @@ class DataFolderReader
 
     public function getConversationFiles(string $conversationFolder): array
     {
-        if ($this->isDir($conversationFolder)) {
+        if (is_dir($conversationFolder)) {
             return array_diff(scandir($conversationFolder), ['.', '..']);
         }
 
         throw new \InvalidArgumentException("Conversation folder does not exist.");
     }
-
-    private function isDir(string $folder): bool
-    {
-        return is_dir($folder);
-    }
-
 }

@@ -8,10 +8,7 @@ use App\Core\Entity\Message;
 use App\Core\Entity\Person;
 use App\Core\Entity\Reaction;
 use DateTime;
-use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,15 +44,7 @@ final class ConversationImportCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws MappingException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title("Import data from conversation");
 
@@ -95,13 +84,6 @@ final class ConversationImportCommand extends Command
         return $this->io->ask("Name this conversation import");
     }
 
-    /**
-     * @param string $folder
-     * @param string $name
-     * @return Conversation
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     private function importConversation(string $folder, string $name): Conversation
     {
         $conversation = new Conversation();
@@ -115,13 +97,7 @@ final class ConversationImportCommand extends Command
         return $conversation;
     }
 
-    /**
-     * @param Conversation $conversation
-     * @param array $persons
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    private function importPersons(Conversation $conversation, array $persons): void
+    private function importPersons(Conversation $conversation, array $persons)
     {
         $pb = $this->io->createProgressBar(count($persons));
         $pb->setFormat(self::PROGRESS_BAR_FORMAT);
@@ -145,14 +121,7 @@ final class ConversationImportCommand extends Command
         $pb->finish();
     }
 
-    /**
-     * @param Conversation $conversation
-     * @param array $messages
-     * @throws MappingException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    private function importMessages(Conversation $conversation, array $messages): void
+    private function importMessages(Conversation $conversation, array $messages)
     {
         $persons = $this->manager->getRepository(Person::class)->findBy(['conversation' => $conversation]);
 
@@ -160,7 +129,7 @@ final class ConversationImportCommand extends Command
         $pb->setFormat(self::PROGRESS_BAR_FORMAT);
 
         $pb->start();
-        $this->manager->getConnection()->getConfiguration()->setSQLLogger(null);
+        $this->manager->getConnection()->getConfiguration()->setSQLLogger();
 
         $chunk = 0;
         foreach ($messages as $message) {
@@ -208,12 +177,6 @@ final class ConversationImportCommand extends Command
         $pb->finish();
     }
 
-    /**
-     * @param array $reactions
-     * @param array $persons
-     * @param Message $message
-     * @throws ORMException
-     */
     private function importReactions(array $reactions, array $persons, Message $message)
     {
         foreach ($reactions as $reaction) {

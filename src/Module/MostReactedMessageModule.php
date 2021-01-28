@@ -9,7 +9,6 @@ use App\Core\Module\AbstractModule;
 
 final class MostReactedMessageModule extends AbstractModule
 {
-
     public int $weight = 3;
 
     const LENGTH = 9;

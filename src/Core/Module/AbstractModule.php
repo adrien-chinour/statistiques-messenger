@@ -31,10 +31,8 @@ abstract class AbstractModule implements ModuleInterface
         }
     }
 
-    protected function createQueryBuilder()
+    protected function createQueryBuilder(): QueryBuilder
     {
         return new QueryBuilder($this->em);
     }
-
-
 }
