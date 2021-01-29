@@ -1,12 +1,12 @@
-<div class="container text-center">
+<div class="container text-center bg-dark text-light mb-3 mt-3 pb-2 pt-2">
 
-    <h2 class="display-3 mb-3">Quelques chiffres</h2>
+    <h2 class="mb-3">Quelques chiffres</h2>
 
-    <h3>
+    <h5>
         Un total de <strong>{{ count | number_format(0, ',', ' ') }}</strong> messages envoyés.
-    </h3>
+    </h5>
 
-    <h3>
+    <h5>
         Une moyenne de <strong>{{ ratio |number_format(0) }}</strong> messages par jour.
-    </h3>
+    </h5>
 </div>

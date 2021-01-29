@@ -1,24 +1,19 @@
 <div class="container">
-    <h2 class="display-4 mb-4">Ça a fait réagir !</h2>
+    <h2 class="mb-4">Ça a fait réagir !</h2>
 
     <ul class="list-unstyled">
         {% for row in ranking %}
-            <li class="media align-self-start border-dark mb-3">
-                <div class="mr-3">
-                    <p class="display-4"># {{ loop.index }}</p>
-                </div>
-                <div class="media-body">
-                    <h5 class="mt-0">
-                        <span class="badge badge-pill badge-primary">{{ row.name }}</span>
-                        <small class="text-muted small">{{ row.datetime | date('d/m/Y h:i') }}</small>
-                    </h5>
-                    {{ row.content }}
-                    <div>
-                        <span class="badge badge-pill badge-dark">{{ row.nbReactions }} réactions</span>
-                    </div>
-                </div>
+            <li class="mb-3 bg-dark text-light p-2 rounded">
+                <h5 class="mt-0">
+                    <span class="badge badge-pill badge-primary"># {{ loop.index }} {{ row.name }}</span>
+                    <small class="small">{{ row.datetime | date('d/m/Y h:i') }}</small>
+                </h5>
+                <p class="mb-0">
+                    <em>{{ row.content }}</em>
+                </p>
+
+                <p class="mb-0 badge badge-pill badge-primary badge-sm">{{ row.nbReactions }} réactions</p>
             </li>
-            <hr class="text-muted">
         {% endfor %}
     </ul>
 </div>
