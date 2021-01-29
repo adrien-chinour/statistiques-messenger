@@ -41,15 +41,10 @@ class ConversationCleanCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $conversations = $this->manager->getRepository(Conversation::class)->findAll();
-        $this->io->progressStart(count($conversations));
-        foreach ($conversations as $conversation) {
-            $this->manager->remove($conversation);
-            $this->manager->flush();
-            $this->io->progressAdvance();
+        $connection = $this->manager->getConnection();
+        foreach (['reaction', 'message', 'person', 'conversation'] as $table) {
+            $connection->exec("delete from $table");
         }
-        $this->io->progressFinish();
-        $this->io->newLine(2);
         $this->io->success("All conversations removed.");
 
         return 0;
