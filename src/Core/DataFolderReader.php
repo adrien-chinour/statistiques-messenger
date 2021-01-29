@@ -35,7 +35,8 @@ class DataFolderReader
     public function getConversationFiles(string $conversationFolder): array
     {
         if (is_dir($conversationFolder)) {
-            return array_diff(scandir($conversationFolder), ['.', '..']);
+            $files = array_diff(scandir($conversationFolder), ['.', '..']);
+            return array_filter($files, fn($file) => strpos($file, '.json') !== false);
         }
 
         throw new \InvalidArgumentException("Conversation folder does not exist.");
