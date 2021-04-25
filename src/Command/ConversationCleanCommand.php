@@ -33,13 +33,13 @@ final class ConversationCleanCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-        $this->io->confirm("This action will remove all imported conversation in database. Continue ?");
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $continue = $this->io->confirm("This action will remove all imported conversation in database. Continue ?");
+        if (!$continue) {
+            return 0;
+        }
+
         $connection = $this->manager->getConnection();
         foreach (['reaction', 'message', 'person', 'conversation'] as $table) {
             $connection->exec("delete from $table");
