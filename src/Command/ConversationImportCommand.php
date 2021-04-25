@@ -9,6 +9,7 @@ use App\Core\Entity\Person;
 use App\Core\Entity\Reaction;
 use DateTime;
 use Doctrine\ORM\EntityManager;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -90,7 +91,7 @@ final class ConversationImportCommand extends Command
         $conversation = new Conversation();
         $conversation
             ->setName($name)
-            ->setUuid(md5(uniqid()))
+            ->setUuid(Uuid::uuid4()->toString())
             ->setFolder($folder);
         $this->manager->persist($conversation);
         $this->manager->flush();
@@ -105,13 +106,13 @@ final class ConversationImportCommand extends Command
 
         $pb->start();
         foreach ($persons as $person) {
-            $name = $person["name"];
-            $exist = $this->manager->getRepository(Person::class)->findOneBy(['conversation' => $conversation, 'name' => $name]);
+            $username = $person["name"];
+            $exist = $this->manager->getRepository(Person::class)->findOneBy(['conversation' => $conversation, 'name' => $username]);
 
             if ($exist === null) {
                 $entity = new Person();
                 $entity
-                    ->setName($name)
+                    ->setName($username)
                     ->setConversation($conversation);
 
                 $this->manager->persist($entity);
@@ -135,13 +136,13 @@ final class ConversationImportCommand extends Command
         $chunk = 0;
         foreach ($messages as $message) {
             $chunk += 1;
-            $name = $message["sender_name"];
-            $person = $this->getAuthor($persons, $name);
+            $username = $message["sender_name"];
+            $person = $this->getAuthor($persons, $username);
 
             if ($person === null) {
                 $person = new Person();
                 $person
-                    ->setName($name)
+                    ->setName($username)
                     ->setConversation($conversation);
                 $this->manager->persist($person);
                 $this->manager->flush();

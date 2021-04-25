@@ -1,5 +1,7 @@
 # Facebook Messenger Statistics
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=adrien-chinour_statistiques-messenger&metric=alert_status)](https://sonarcloud.io/dashboard?id=adrien-chinour_statistiques-messenger)
+
 ## Description
 
 Get statistics from all your conversation on Facebook Messenger, get group conversation ranking by user and more stats.

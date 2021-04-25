@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Throwable;
 
 final class ConversationStatisticsCommand extends Command
 {
@@ -44,14 +43,10 @@ final class ConversationStatisticsCommand extends Command
 
         $question = new Question('Conversation to load', null);
         $question->setAutocompleterValues($this->manager->getRepository(Conversation::class)->findAll());
-        $conversationName = $io->askQuestion($question);
-        if ($conversationName === null) {
-            return 1;
-        }
 
-        /** @var Conversation|null $conversation */
+        $conversationName = $io->askQuestion($question);
         $conversation = $this->manager->getRepository(Conversation::class)->findOneBy(['name' => $conversationName]);
-        if ($conversation === null) {
+        if ($conversationName === null || !$conversation instanceof Conversation) {
             return 1;
         }
 
@@ -61,7 +56,7 @@ final class ConversationStatisticsCommand extends Command
                 "output/conversations/$conversationName/index.html",
                 ["content" => $this->loadModuleContent($conversation)]
             );
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $io->error($e->getMessage());
             return 1;
         }

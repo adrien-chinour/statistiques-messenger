@@ -3,6 +3,7 @@
 namespace App\Core\Module;
 
 use App\Core\Renderer;
+use App\Core\RenderModuleException;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
@@ -26,9 +27,7 @@ abstract class AbstractModule implements ModuleInterface
         try {
             return $this->renderer->write($template, $data);
         } catch (\Exception $e) {
-            throw new \RuntimeException(
-                sprintf("Build module %s failed. Exception message : %s", get_class(), $e->getMessage())
-            );
+            throw new RenderModuleException($this, $e);
         }
     }
 
