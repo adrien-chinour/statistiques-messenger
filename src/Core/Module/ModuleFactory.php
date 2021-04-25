@@ -51,7 +51,7 @@ class ModuleFactory
 
         // order by weight in ASC mode
         usort($classes, function ($a, $b) {
-            return get_class_vars($a)["weight"] > get_class_vars($b)["weight"];
+            return get_class_vars($a)["weight"] > get_class_vars($b)["weight"] ? $b : $a;
         });
 
         return $classes;
