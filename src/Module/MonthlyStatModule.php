@@ -12,17 +12,16 @@ class MonthlyStatModule extends AbstractModule
     public function build(Conversation $conversation): string
     {
         return $this->render('modules/monthly-stat.html.twig', [
-            'months' => $this->getMessageByMonth()
+            'months' => $this->getMessageByMonth($conversation)
         ]);
     }
 
-    protected function getMessageByMonth(): array
+    protected function getMessageByMonth(Conversation $conversation): array
     {
         // to_char is not known by doctrine dql
-        $sql = "select to_char(m.datetime, 'YYYY-MM') as date, count(*) as count from message m group by to_char(m.datetime, 'YYYY-MM')";
+        $sql = "select to_char(m.datetime, 'YYYY-MM') as date, count(*) as count from message m where conversation_id = {$conversation->getId()} group by to_char(m.datetime, 'YYYY-MM')";
 
-        $connection = $this->getConnection();
-        $statement = $connection->prepare($sql);
+        $statement = $this->getConnection()->prepare($sql);
         $statement->execute();
 
         $data = $statement->fetchAll();
