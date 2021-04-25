@@ -13,7 +13,7 @@ services:
     - ./data/db/:/var/lib/postgresql/data
 
   app:
-    build: .
-    volumes: 
+    build: .docker/
+    volumes:
       - .:/app
       - ./data/tmp:/tmp
