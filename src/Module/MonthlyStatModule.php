@@ -5,7 +5,7 @@ namespace App\Module;
 use App\Core\Entity\Conversation;
 use App\Core\Module\AbstractModule;
 
-class MonthlyStatModule extends AbstractModule
+final class MonthlyStatModule extends AbstractModule
 {
     public int $weight = 3;
 

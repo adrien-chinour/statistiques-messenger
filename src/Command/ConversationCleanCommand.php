@@ -2,14 +2,13 @@
 
 namespace App\Command;
 
-use App\Core\Entity\Conversation;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class ConversationCleanCommand extends Command
+final class ConversationCleanCommand extends Command
 {
     private static string $name = 'conversation:clean';
 

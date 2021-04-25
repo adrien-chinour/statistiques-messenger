@@ -9,7 +9,7 @@ use App\Core\Entity\Reaction;
 use App\Core\Module\AbstractModule;
 use Doctrine\ORM\Query\Expr\Join;
 
-class UserRankingModule extends AbstractModule
+final class UserRankingModule extends AbstractModule
 {
     public int $weight = 2;
 
