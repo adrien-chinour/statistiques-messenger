@@ -25,6 +25,7 @@ final class ConversationCleanCommand extends Command
     protected function configure()
     {
         $this->setName(self::$name);
+        $this->setAliases(['c:c']);
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)

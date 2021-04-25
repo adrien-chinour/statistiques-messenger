@@ -35,6 +35,7 @@ final class ConversationStatisticsCommand extends Command
     protected function configure()
     {
         $this->setName(self::$name);
+        $this->setAliases(['c:s']);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

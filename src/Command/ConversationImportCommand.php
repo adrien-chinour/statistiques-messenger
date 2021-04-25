@@ -37,6 +37,7 @@ final class ConversationImportCommand extends Command
     protected function configure()
     {
         $this->setName(self::$name);
+        $this->setAliases(['c:i']);
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
