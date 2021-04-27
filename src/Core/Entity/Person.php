@@ -25,7 +25,7 @@ class Person
     private ?string $name = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="author")
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="author", cascade={"persist", "remove"})
      */
     private ?Collection $messages = null;
 

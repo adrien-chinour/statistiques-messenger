@@ -42,7 +42,7 @@ final class ConversationCleanCommand extends Command
         }
 
         $connection = $this->manager->getConnection();
-        foreach (['reaction', 'message', 'person', 'conversation'] as $table) {
+        foreach (['media', 'reaction', 'message', 'person', 'conversation'] as $table) {
             $connection->exec("delete from $table");
         }
         $this->io->success("All conversations removed.");

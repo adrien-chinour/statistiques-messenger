@@ -27,12 +27,12 @@ class Conversation
     /**
      * @ORM\OneToMany(targetEntity="Person", mappedBy="conversation", cascade={"persist", "remove"})
      */
-    private ?Collection $persons = null;
+    private Collection $persons;
 
     /**
      * @ORM\OneToMany(targetEntity="Message", mappedBy="conversation", cascade={"persist", "remove"})
      */
-    private ?Collection $messages = null;
+    private Collection $messages;
 
     /**
      * @ORM\Column(type="string", unique=true)
@@ -43,6 +43,12 @@ class Conversation
      * @ORM\Column(type="string", nullable=true)
      */
     private ?string $folder = null;
+
+    public function __construct()
+    {
+        $this->persons = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+    }
 
     public function __toString(): string
     {
@@ -76,6 +82,12 @@ class Conversation
         return $this;
     }
 
+    public function addPerson(Person $person): Conversation
+    {
+        $this->persons->add($person);
+        return $this;
+    }
+
     public function getMessages(): Collection
     {
         return $this->messages;
@@ -84,6 +96,12 @@ class Conversation
     public function setMessages(array $messages): Conversation
     {
         $this->messages = new ArrayCollection($messages);
+        return $this;
+    }
+
+    public function addMessage(Message $message): Conversation
+    {
+        $this->messages->add($message);
         return $this;
     }
 

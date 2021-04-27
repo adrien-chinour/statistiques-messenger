@@ -31,9 +31,14 @@ class Message
     private ?Conversation $conversation = null;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private ?string $content = null;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Media", mappedBy="message", cascade={"persist", "remove"})
+     */
+    private Collection $medias;
 
     /**
      * @ORM\Column(type="datetime")
@@ -41,14 +46,20 @@ class Message
     private ?DateTime $datetime = null;
 
     /**
-     * @ORM\OneToMany(targetEntity="Reaction", mappedBy="message")
+     * @ORM\OneToMany(targetEntity="Reaction", mappedBy="message", cascade={"persist", "remove"})
      */
-    private ?Collection $reactions = null;
+    private Collection $reactions;
 
     /**
      * @ORM\Column(type="integer")
      */
     private ?int $nbReactions = null;
+
+    public function __construct()
+    {
+        $this->medias = new ArrayCollection();
+        $this->reactions = new ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -119,6 +130,17 @@ class Message
     {
         $this->nbReactions = $nbReactions;
 
+        return $this;
+    }
+
+    public function getMedias(): Collection
+    {
+        return $this->medias;
+    }
+
+    public function setMedias(array $medias): Message
+    {
+        $this->medias = new ArrayCollection($medias);
         return $this;
     }
 }

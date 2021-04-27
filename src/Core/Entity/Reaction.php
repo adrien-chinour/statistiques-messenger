@@ -18,12 +18,12 @@ class Reaction
     private ?int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="reactions", cascade={"persist"}))
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="reactions")
      */
     private ?Person $author = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Message", inversedBy="reactions", cascade={"persist"}))
+     * @ORM\ManyToOne(targetEntity="Message", inversedBy="reactions")
      */
     private ?Message $message = null;
 
